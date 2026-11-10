@@ -1,3 +1,4 @@
-#### This project is for the DevOps Bootcamp exercise for
+#### This project is for the Devops Bootcamp Exercise for 
+#### "Container Orchestration with Kubernetes" 
 
-#### "Container Orchestration with Kubernetes"
+
