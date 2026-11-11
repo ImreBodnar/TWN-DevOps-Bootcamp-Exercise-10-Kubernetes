@@ -29,3 +29,51 @@ helm version
 ```bash
 minikube start
 ```
+
+## Exercise 2
+
+**The values file for installing the MySQL Helm chart:**
+
+```yaml
+global:
+  security:
+    allowInsecureImages: true
+image:
+  registry: docker.io
+  tag: latest
+  repository: bitnamilegacy/mysql
+ 
+architecture: replication
+
+auth:
+  rootPassword: "q1w2e3r4"
+  database: "java-app-db"
+  username: "imre"
+  password: "t5z6u7i8"
+
+primary:
+  persistence:
+    storageClass: standard
+    size: 1Gi
+
+secondary:
+  replicaCount: 2
+  persistence:
+    storageClass: standard
+    size: 1Gi
+```
+
+**Installing and verifying the MySQL Helm chart:**
+
+```bash
+# Install Helm chart
+helm install mysql oci://registry-1.docker.io/bitnamicharts/mysql -n mysql-helm --create-namespace -f mysql-manifest.yaml
+
+# Verification
+helm -n mysql-helm list
+kubectl -n mysql-helm get all
+```
+
+**The installed Helm chart:**
+
+![The installed helm chart.](Exercise-2-The-Installed-Helm-Chart.jpg)

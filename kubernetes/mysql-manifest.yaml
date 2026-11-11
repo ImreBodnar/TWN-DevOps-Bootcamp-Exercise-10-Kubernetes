@@ -1,0 +1,26 @@
+global:
+  security:
+    allowInsecureImages: true
+image:
+  registry: docker.io
+  tag: latest
+  repository: bitnamilegacy/mysql
+ 
+architecture: replication
+
+auth:
+  rootPassword: "q1w2e3r4"
+  database: "java-app-db"
+  username: "imre"
+  password: "t5z6u7i8"
+
+primary:
+  persistence:
+    storageClass: standard
+    size: 1Gi
+
+secondary:
+  replicaCount: 2
+  persistence:
+    storageClass: standard
+    size: 1Gi
