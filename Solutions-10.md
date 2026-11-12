@@ -32,7 +32,7 @@ minikube start
 
 ## Exercise 2
 
-**The values file for installing the MySQL Helm chart:**
+**The content of the kubernetes\mysql-helm-values.yaml file:**
 
 ```yaml
 global:
@@ -46,10 +46,10 @@ image:
 architecture: replication
 
 auth:
-  rootPassword: "q1w2e3r4"
-  database: "java-app-db"
-  username: "imre"
-  password: "t5z6u7i8"
+  rootPassword: "MYSQL_ROOT_PASSWORD"
+  database: "MYSQL_DB_NAME"
+  username: "MYSQL_USERNAME"
+  password: "MYSQL_PASSWORD"
 
 primary:
   persistence:
@@ -67,7 +67,7 @@ secondary:
 
 ```bash
 # Install Helm chart
-helm install mysql oci://registry-1.docker.io/bitnamicharts/mysql -n mysql-helm --create-namespace -f mysql-manifest.yaml
+helm install mysql oci://registry-1.docker.io/bitnamicharts/mysql -n mysql-helm --create-namespace -f kubernetes\mysql-helm-values.yaml
 
 # Verification
 helm -n mysql-helm list
@@ -76,4 +76,6 @@ kubectl -n mysql-helm get all
 
 **The installed Helm chart:**
 
-![The installed helm chart.](Exercise-2-The-Installed-Helm-Chart.jpg)
+![The installed helm chart.](Exercise-2-The-Installed-Mysql-Helm-Chart.jpg)
+
+## Exercise 3
