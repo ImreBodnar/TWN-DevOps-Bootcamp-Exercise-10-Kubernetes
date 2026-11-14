@@ -5,6 +5,5 @@ metadata:
   name: app-db-config
 
 data:
-  DB_USER: "imre"
-  DB_SERVER: ""
-  DB_NAME: "java-app-db"
+  DB_SERVER: mysql-primary
+  DB_NAME: java-app-db

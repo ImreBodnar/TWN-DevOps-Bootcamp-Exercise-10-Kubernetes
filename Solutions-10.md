@@ -66,12 +66,14 @@ secondary:
 **Installing and verifying the MySQL Helm chart:**
 
 ```bash
+cd kubernetes
+
 # Install Helm chart
-helm install mysql oci://registry-1.docker.io/bitnamicharts/mysql -n mysql-helm --create-namespace -f kubernetes\mysql-helm-values.yaml
+helm install mysql oci://registry-1.docker.io/bitnamicharts/mysql -n twn-exercise-10 --create-namespace -f mysql-helm-values.yaml
 
 # Verification
-helm -n mysql-helm list
-kubectl -n mysql-helm get all
+helm -n twn-exercise-10 list
+kubectl -n twn-exercise-10 get all
 ```
 
 **The installed Helm chart:**
@@ -79,3 +81,49 @@ kubectl -n mysql-helm get all
 ![The installed helm chart.](Exercise-2-The-Installed-Mysql-Helm-Chart.jpg)
 
 ## Exercise 3
+
+**Because of some incompatibility errors, I had to temporarily set the main Java version for building:**
+
+```bash
+export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
+gradle build
+```
+
+**I had an error according to MySql version.**
+**So in the build.gradle I had to exchange the mysql row in the dependencies section for this:**
+
+```bash
+implementation 'com.mysql:mysql-connector-j:9.2.0'
+```
+
+**After that I had to run again the gradle build command and build the docker image:**
+
+```bash
+# Rerun gradle build.
+gradle build
+
+# Build and tag the Docker image.
+docker build -t twn-exercise10-app:1.0 .
+docker tag twn-exercise10-app:1.0 bodnarimredocker/twn-exercise10-app:1.0
+
+# Login and push to my DockerHub account.
+docker login
+docker push bodnarimredocker/twn-exercise10-app:1.0
+```
+
+**Finally it's time for deploying!**
+**At first I created a docker-registry type secret what I can use in the `imagePullSecrets` section to login to Docker before pulling the needed image.**
+**After that I applied my manifests.**
+
+```bash
+cd kubernetes
+
+kubectl create secret docker-registry dockerhub-secret --docker-email=DOCKER_MAIL_ADDRESS --docker-username=bodnarimredocker --docker-password=DOCKER_PASSWORD --docker-server=https://index.docker.io/v1/ -n twn-exercise-10
+
+kubectl apply -f app-configmap.yaml -n twn-exercise-10
+kubectl apply -f app-secret.yaml -n twn-exercise-10
+kubectl apply -f app-deployment.yaml -n twn-exercise-10
+kubectl apply -f app-service.yaml -n twn-exercise-10
+
+kubectl get all -n twn-exercise-10
+```

@@ -5,29 +5,35 @@ metadata:
   name: app-deployment
 
 spec:
-  replicas: 2
+  replicas: 3
 
   selector:
     matchLabels:
-      app: java-app
+      app: twn-java-app
 
   template:
     metadata:
       labels:
-        app: java-app
-
+        app: twn-java-app
     spec:
+      imagePullSecrets:
+        - name: dockerhub-secret
       containers:
-        - name: java-app
-          image: my-app:1.0
+        - name: twn-exercise10-app
+          image: bodnarimredocker/twn-exercise10-app:1.0
           ports:
             - containerPort: 8080
           env:
             - name: DB_USER
               valueFrom:
-                configMapKeyRef:
-                  name: app-db-config
+                secretKeyRef:
+                  name: app-db-secret
                   key: DB_USER
+            - name: DB_PWD
+              valueFrom:
+                secretKeyRef:
+                  name: app-db-secret
+                  key: DB_PWD
             - name: DB_SERVER
               valueFrom:
                 configMapKeyRef:
@@ -38,8 +44,3 @@ spec:
                 configMapKeyRef:
                   name: app-db-config
                   key: DB_NAME
-            - name: DB_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: app-db-secret
-                  key: DB_PWD
