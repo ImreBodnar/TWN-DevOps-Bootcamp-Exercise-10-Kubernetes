@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: phpmyadmin-deployment
+
+spec:
+  replicas: 1
+
+  selector:
+    matchLabels:
+      app: twn-phpmyadmin
+
+  template:
+    metadata:
+      labels:
+        app: twn-phpmyadmin
+    spec:
+      containers:
+        - name: twn-phpmyadmin-container
+          image: phpmyadmin:5.2.3
+          ports:
+            - containerPort: 80
+          env:
+            - name: PMA_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: app-db-config
+                  key: DB_SERVER
+---
+apiVersion: v1
+kind: Service
+
+metadata:
+  name: phpmyadmin-service
+
+spec:
+  selector:
+    app: twn-phpmyadmin
+  ports:
+    - protocol: TCP
+      port: 8081
+      targetPort: 80

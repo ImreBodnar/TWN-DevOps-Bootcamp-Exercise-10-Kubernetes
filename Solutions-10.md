@@ -127,3 +127,68 @@ kubectl apply -f app-service.yaml -n twn-exercise-10
 
 kubectl get all -n twn-exercise-10
 ```
+
+## Exercise 4
+
+**The newly added `phpmyadmin-deployment.yaml` file's content:**
+
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: phpmyadmin-deployment
+
+spec:
+  replicas: 1
+
+  selector:
+    matchLabels:
+      app: twn-phpmyadmin
+
+  template:
+    metadata:
+      labels:
+        app: twn-phpmyadmin
+    spec:
+      containers:
+        - name: twn-phpmyadmin-container
+          image: phpmyadmin:5.2.3
+          ports:
+            - containerPort: 80
+          env:
+            - name: PMA_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: app-db-config
+                  key: DB_SERVER
+---
+apiVersion: v1
+kind: Service
+
+metadata:
+  name: phpmyadmin-service
+
+spec:
+  selector:
+    app: twn-phpmyadmin
+  ports:
+    - protocol: TCP
+      port: 8081
+      targetPort: 80
+
+```
+
+**I used these commands to deploy a PhpMyAdmin instance into the cluster:**
+
+```bash
+cd kubernetes
+
+kubectl apply -f phpmyadmin-deployment.yaml -n twn-exercise-10
+
+kubectl get all -n twn-exercise-10
+```
+
+**PhpMyAdmin is added to the cluster:**
+
+![Phpmyadmin is added to the cluster.](Exercise-4-The-Updated-List-of-Components.jpg)
