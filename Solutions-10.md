@@ -111,6 +111,94 @@ docker login
 docker push bodnarimredocker/twn-exercise10-app:1.0
 ```
 
+**The contents of `app-configmap.yaml`:**
+
+```yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app-db-config
+data:
+  DB_SERVER: mysql-primary
+  DB_NAME: java-app-db
+```
+
+**The contents of `app-secret.yaml`:**
+
+```yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: app-db-secret
+type: Opaque
+data:
+  DB_USER: aW1yZQ==
+  DB_PWD: dDV6NnU3aTg=
+```
+
+**The contents of `app-deployment.yaml`:**
+
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app-deployment
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: twn-java-app
+  template:
+    metadata:
+      labels:
+        app: twn-java-app
+    spec:
+      imagePullSecrets:
+        - name: dockerhub-secret
+      containers:
+        - name: twn-exercise10-app
+          image: bodnarimredocker/twn-exercise10-app:1.0
+          ports:
+            - containerPort: 8080
+          env:
+            - name: DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: app-db-secret
+                  key: DB_USER
+            - name: DB_PWD
+              valueFrom:
+                secretKeyRef:
+                  name: app-db-secret
+                  key: DB_PWD
+            - name: DB_SERVER
+              valueFrom:
+                configMapKeyRef:
+                  name: app-db-config
+                  key: DB_SERVER
+            - name: DB_NAME
+              valueFrom:
+                configMapKeyRef:
+                  name: app-db-config
+                  key: DB_NAME
+```
+
+**The contents of `app-service.yaml`:**
+
+```yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: app-service
+spec:
+  selector:
+    app: twn-java-app
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
+```
+
 **Finally it's time for deploying!**
 **At first I created a docker-registry type secret what I can use in the `imagePullSecrets` section to login to Docker before pulling the needed image.**
 **After that I applied my manifests.**
@@ -135,17 +223,13 @@ kubectl get all -n twn-exercise-10
 ```yaml
 apiVersion: apps/v1
 kind: Deployment
-
 metadata:
   name: phpmyadmin-deployment
-
 spec:
   replicas: 1
-
   selector:
     matchLabels:
       app: twn-phpmyadmin
-
   template:
     metadata:
       labels:
@@ -165,10 +249,8 @@ spec:
 ---
 apiVersion: v1
 kind: Service
-
 metadata:
   name: phpmyadmin-service
-
 spec:
   selector:
     app: twn-phpmyadmin
@@ -176,7 +258,6 @@ spec:
     - protocol: TCP
       port: 8081
       targetPort: 80
-
 ```
 
 **I used these commands to deploy a PhpMyAdmin instance into the cluster:**
