@@ -273,3 +273,18 @@ kubectl get all -n twn-exercise-10
 **PhpMyAdmin is added to the cluster:**
 
 ![Phpmyadmin is added to the cluster.](Exercise-4-The-Updated-List-of-Components.jpg)
+
+## Exercise 5
+
+**Because the `ingress` addon is part of Minkube, I just need to enable it:**
+
+```bash
+# Enable ingress.
+minikube addons enable ingress
+# Verification.
+minkube addons list
+```
+
+**My MiniKube addon list:**
+
+![My minikube addon list.](Exercise-5-The-Addon-List-of-MiniKube.jpg)
