@@ -288,3 +288,49 @@ minkube addons list
 **My MiniKube addon list:**
 
 ![My minikube addon list.](Exercise-5-The-Addon-List-of-MiniKube.jpg)
+
+## Exercise 6
+
+**This is the Ingress I created:**
+
+```yaml
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: app-ingress
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: twn10app.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: app-service
+            port:
+              number: 8080
+```
+
+**I used this command to apply it:**
+
+```bash
+cd kubernetes
+
+kubectl apply -f app-ingress.yaml -n twn-exercise-10
+```
+
+> Notice: In this chapter I work on my Windows 11 PC.
+
+**Into the `C:\Windows\System32\drivers\etc\hosts` file I appended a row like this:**
+
+```text
+127.0.0.1   twn10app.com
+```
+
+**And finally I started a tunnel to make it accessible in my browser:**
+
+```bash
+minikube tunnel
+```
