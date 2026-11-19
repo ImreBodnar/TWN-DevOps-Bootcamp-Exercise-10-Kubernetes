@@ -334,3 +334,15 @@ kubectl apply -f app-ingress.yaml -n twn-exercise-10
 ```bash
 minikube tunnel
 ```
+
+## Exercise 7
+
+**I used this command to port-forward the `phpmyadmin-service`:**
+
+```bash
+kubectl -n twn-exercise-10 port-forward svc/phpmyadmin-service 8081:8081
+```
+
+**The port-forwarded PhpMyAdmin in browser:**
+
+![The port-forwarded PhpMyAdmin in browser.](Exercise-7-The-Port-Forwarded-PhpMyAdmin.jpg)
